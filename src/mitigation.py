@@ -1,14 +1,16 @@
 # imports
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 import src.customFunc as cf
 from scipy.optimize import minimize
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.primitives import Estimator
-from deap import base, creator, tools
+from scipy.stats import linregress
+#from deap import base, creator, tools
 
 
-def VQE_minimization(ansatz_circuit, observable: SparsePauliOp, initial_guess: str = "zero", minimizer: str = "COBYLA", tol=None):
+def VQE_minimization(ansatz_circuit, observable: SparsePauliOp, initial_guess: str = "zero", minimizer: str = "COBYLA", tol=None, maxiter: int=10000, fixseed: bool=False):
     """
     Compute the VQE minimization algorithm.
     -----------------------------------------
@@ -21,6 +23,8 @@ def VQE_minimization(ansatz_circuit, observable: SparsePauliOp, initial_guess: s
     Returns:
         cost_history_dict (dict): iterations and their cost value
     """
+    if fixseed==True:
+        random.seed(42)
     estimator = Estimator()
     num_params=ansatz_circuit.num_parameters
 
@@ -47,7 +51,7 @@ def VQE_minimization(ansatz_circuit, observable: SparsePauliOp, initial_guess: s
     cost_history_dict = {"iters": 0, "cost_history": []}
 
     # Optimization in layers
-    res = minimize(cost_func, initial_param_vector, args=(ansatz_circuit, observable, estimator), method=minimizer, options={'maxiter': 10000}, tol=tol)
+    res = minimize(cost_func, initial_param_vector, args=(ansatz_circuit, observable, estimator), method=minimizer, options={'maxiter': maxiter}, tol=tol)
     return cost_history_dict
 
 
@@ -359,42 +363,3 @@ def VQE_minimization_AG(ansatz_circuit, observable : SparsePauliOp, tolerance : 
         print("=====================================================")
 
     return data
-
-
-def VQE_minimization_AG_plus(ansatz_circuit, observable : SparsePauliOp, stop_condition : float, crossover_prob : float = 0.5, mutation_prob : float = 0.25, population_size : int = 100, max_gen : int = 100, minimizer: str = "COBYLA", print_info: bool = True, plot_info: bool = True):
-
-    converg = False
-    total_AG_evaluations = 0
-    while not converg:
-
-        AG_result = VQE_minimization_AG(ansatz_circuit, observable, stop_condition, crossover_prob, mutation_prob, population_size, max_gen, print_info=False, plot_info=False)
-        total_AG_evaluations += AG_result['n_evaluations']
-
-        # Si el AG converge
-        if AG_result["n_generations"] < max_gen:
-            converg = True
-        
-    COBYLA_result = VQE_minimization(ansatz_circuit, observable, initial_guess=AG_result["optimal_parameters"], minimizer=minimizer)
-
-        # Show the evolution of the cost function
-    if plot_info:
-        fig, ax = plt.subplots()
-        ax.plot(range(1, AG_result["n_generations"]+1), AG_result["cost_history"], label="AG")
-        ax.plot(range(AG_result["n_generations"]+1, AG_result["n_generations"]+COBYLA_result["iters"]+1), COBYLA_result["cost_history"], label=minimizer)
-
-        ax.set_xlabel("Generaciones/iteraciones")
-        ax.set_ylabel(r"$\langle O\rangle$")
-        ax.set_title(f"Minimización")
-        plt.legend()
-        plt.show()
-
-    if print_info:
-        print(f"Fin ejecución. Mínimo encontrado: {COBYLA_result['cost_history'][-1]}")
-        print(f"Número de generaciones usadas en AG: {AG_result['n_generations']}")
-        print(f"Número total de evaluaciones de la función de coste: {total_AG_evaluations + COBYLA_result['iters']}")
-        print(f"Evaluaciones AG: {total_AG_evaluations}")
-        print(f"Evaluaciones {minimizer}: {COBYLA_result['iters']}")
-        print("=====================================================")
-
-
-        return {"AG_result" : AG_result, "minimizer_result" : COBYLA_result}
