@@ -2,8 +2,10 @@
 import time
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
+import sys
+sys.path.append('../../../')
 from src import customFunc as cf
-from src import ansatzs as anz
+from src import ansatzes as anz
 from src import mitigation as mit
 
 # Base observable
@@ -49,7 +51,7 @@ for n in range(2, 10):
 
 	# Junto todos los datos en un array y los guardo en txt
 	array_to_save = np.column_stack((generations_exp, evaluations_exp, time_exp, minimums_exp))
-	np.savetxt(f"data/data_GA_{n}qubits_{pop}.csv", array_to_save, fmt="%f", delimiter=",")
+	np.savetxt(f"data/genetic/data_GA_{n}qubits_{pop}.csv", array_to_save, fmt="%f", delimiter=",")
 
 
 	###################### Exp AG high pop #####################
@@ -84,7 +86,7 @@ for n in range(2, 10):
 
 	# Junto todos los datos en un array y los guardo en txt
 	array_to_save = np.column_stack((generations_exp, evaluations_exp, time_exp, minimums_exp))
-	np.savetxt(f"data/data_GA_{n}qubits_{pop}.csv", array_to_save, fmt="%f", delimiter=",")
+	np.savetxt(f"data/genetic/data_GA_{n}qubits_{pop}.csv", array_to_save, fmt="%f", delimiter=",")
 
 
 	###################### Exp COBYLA #####################
@@ -115,4 +117,4 @@ for n in range(2, 10):
 
 	# Junto todos los datos en un array y los guardo en txt
 	array_to_save = np.column_stack((generations_exp, evaluations_exp, time_exp, minimums_exp))
-	np.savetxt(f"data/data_COBYLA_{n}qubits.csv", array_to_save, fmt="%f", delimiter=",")
+	np.savetxt(f"data/genetic/data_COBYLA_{n}qubits.csv", array_to_save, fmt="%f", delimiter=",")

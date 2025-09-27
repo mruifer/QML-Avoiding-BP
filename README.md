@@ -22,11 +22,12 @@ project/
 ├── src/                         # Main project module
 │   ├── __init__.py              # Marks this directory as a Python package
 │   ├── customFuncs.py           # Utility functions
-│   └── ansatzs.py               # Ansatz building functions
+│   └── ansatzes.py               # Ansatz building functions
 │
 ├── notebooks/                   # Main experiments
-│   ├── VQE/                     # BP in study of molecules via VQE
-│   └── Z1Z2/                    # BP in Z1Z2 observable
+│   ├── BP_caracterization/      # Caracterization of BP and NIBP via exponential concentration graphs
+│   ├── QML/                     # Appearence of BP in QML algorithms
+|   └── VQE/                     # Study of mitigation and evitation strategies via the VQE
 │
 └── tests/                       # Test scripts and notebooks
     └── test-customFunc.py
