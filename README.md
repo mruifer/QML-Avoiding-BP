@@ -22,7 +22,7 @@ project/
 ├── src/                         # Main project module
 │   ├── __init__.py              # Marks this directory as a Python package
 │   ├── customFuncs.py           # Utility functions
-│   └── ansatzs.py               # Ansatz building functions
+│   └── ansatzes.py               # Ansatz building functions
 │
 ├── notebooks/                   # Main experiments
 │   ├── BP_caracterization/      # Caracterization of BP and NIBP via exponential concentration graphs
